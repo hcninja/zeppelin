@@ -13,10 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+use colored::*;
 
 mod server;
 
 // const VERSION: &str = "0.1.0";
+// This takes directly the version number from cargo.toml
 const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
 
 #[allow(dead_code)]
@@ -28,12 +30,16 @@ fn main() {
 
     println!("[=] Starting Zeppelin v{}", VERSION.unwrap_or("0.0.0_custom_build"));
     if tls {
-        println!("[*] Listening on: https://{}:{}", host, port);
+        let addr = String::from(format!("https://{}:{}", host, port));
+        println!("[*] Listening on: {}", addr.magenta().bold());
     } else {
-        println!("[*] Listening on: http://{}:{}", host, port);
+        let addr = String::from(format!("http://{}:{}", host, port));
+        println!("[*] Listening on: {}", addr.magenta().bold());
     }
+    
+    println!("[*] Serving path: {}", path.magenta().bold());
 
-    println!("[*] Serving path '{}'", path);
+    std::env::set_var("RUST_LOG", "actix_server=debug,actix_web=debug");
 
     match server::start(host, port, tls, path) {
         Err(e) => println!("[!] Error: {},", e),
