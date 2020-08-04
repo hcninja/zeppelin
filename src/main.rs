@@ -69,6 +69,6 @@ fn main() {
     
     match server::start(host, port, tls, path) {
         Err(e) => println!("Error: {}", format!("{}", e).red().bold()),
-        _ => (),
+        _ => println!("Bye..."), //(), 
     }
 }
