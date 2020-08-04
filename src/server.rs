@@ -27,13 +27,13 @@ pub async fn start(host: String, port: String, secure: bool, path: String) -> st
     let host_addr = format!("{}:{}", host, port);
     let html_post = format_template(&host_addr);
 
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
             .route("/", web::get().to(index))
             .route("/upl", web::get().to(get_upload))
             .route("/upl", web::post().to(post_upload))
             .route("/cmd", web::get().to(cmd))
-            .service(fs::Files::new("/nav", ".").show_files_listing())
+            .service(fs::Files::new("/nav", path.clone()).show_files_listing())
     })
     .bind(host_addr)?
     .run()
