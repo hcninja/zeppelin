@@ -18,6 +18,8 @@ actix-multipart = "0.2.0"
 sanitize-filename = "0.2.1"
 colored = "2.0.0"
 clap = "2.33.1"
+chrono = "0.4.13"
+actix-service = "1.0.5"
 
 [profile.release]
 lto = true

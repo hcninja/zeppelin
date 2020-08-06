@@ -16,10 +16,12 @@
 
 // Module for handling the web server related functions
 
-// use std::future::Future;
-use actix_multipart::Multipart;
-use actix_web::{web, App, HttpResponse, HttpServer, Responder, Error};
+use actix_web::{web, App, HttpResponse, HttpRequest, HttpServer, Responder, middleware}; //, http, Error};
 use actix_files as fs;
+use actix_multipart::Multipart;
+use actix_service::Service;
+use chrono::offset::Local as time;
+use colored::*;
 
 #[allow(unused_variables)]
 #[actix_rt::main]
@@ -29,6 +31,28 @@ pub async fn start(host: String, port: String, secure: bool, path: String) -> st
 
     HttpServer::new(move || {
         App::new()
+            .wrap_fn(|req, srv| {
+                let reqpeer = req.peer_addr().unwrap();
+                let reqmethod = req.method().to_string();
+                let reqpath = req.path().to_string();
+                let fut = srv.call(req);
+
+                async move {
+                    let res = fut.await?;
+                    if reqpath != "/favicon.ico" {
+                        let logline = format!("{:?} - {} - {} - {}", 
+                            time::now().to_rfc2822(),
+                            reqpeer,
+                            reqmethod,
+                            reqpath,
+                        );   
+
+                        println!("> {}", logline.purple().on_yellow());
+                    }
+                    Ok(res)
+                }
+            })
+            .wrap(middleware::DefaultHeaders::new().header("Server", "Zeppelin" ))
             .route("/", web::get().to(index))
             .route("/upl", web::get().to(get_upload))
             .route("/upl", web::post().to(post_upload))
@@ -53,12 +77,12 @@ async fn index() -> impl Responder {
     "#)
 }
 
-async fn get_upload() -> impl Responder {
+async fn get_upload(_req: HttpRequest) -> impl Responder {
     let html_post = format_template("localhost:8080");
     HttpResponse::Ok().body(html_post)
 }
 
-async fn post_upload(mut _payload: Multipart) -> Result<HttpResponse, Error> {
+async fn post_upload(mut _payload: Multipart, _req: HttpRequest) -> impl Responder{
     // iterate over multipart stream
     // while let Ok(Some(mut field)) = payload.try_next().await {
     //     let content_type = field.content_disposition().unwrap();
@@ -78,14 +102,17 @@ async fn post_upload(mut _payload: Multipart) -> Result<HttpResponse, Error> {
     //         f = web::block(move || f.write_all(&data).map(|_| f)).await?;
     //     }
     // }
-
-    Ok(HttpResponse::Ok().into())
+    // Ok(HttpResponse::Ok().into())
+    HttpResponse::Ok().body("NYI")
 }
 
-async fn cmd() -> impl Responder {
-    HttpResponse::Ok().body("Cmd client!")
+async fn cmd(_req: HttpRequest) -> impl Responder {
+    HttpResponse::Ok().body("Cmd client NYI!")
 }
 
+// ===========
+// = Helpers =
+// ===========
 fn format_template(host: &str) -> String{
     format!(r#"<!-- Upload form -->
     <html>
@@ -102,6 +129,19 @@ fn format_template(host: &str) -> String{
     </html>"#, host)
 }
 
+// fn logger(req: HttpRequest) -> String {
+//     format!("{:?} - {} - {} - {}", 
+//         time::now().to_rfc2822(),
+//         req.peer_addr().unwrap(),
+//         req.method(),
+//         req.path(),
+//         // req.headers(),
+//     )
+// }
+
+// ========
+// = Test = 
+// ========
 #[cfg(test)]
 mod tests {
     use super::*;
