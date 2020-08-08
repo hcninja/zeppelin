@@ -30,5 +30,6 @@ The standard running mode, is to serve the path where `zeppelin` is running on. 
 - [x] Navigate the served directory
 - [ ] File upload
 - [ ] System command execution
+- [ ] File navigator and uploader authentication
 - [ ] Web interface for logging request with headers
 - [ ] Process injection/migration
