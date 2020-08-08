@@ -129,16 +129,6 @@ fn format_template(host: &str) -> String{
     </html>"#, host)
 }
 
-// fn logger(req: HttpRequest) -> String {
-//     format!("{:?} - {} - {} - {}", 
-//         time::now().to_rfc2822(),
-//         req.peer_addr().unwrap(),
-//         req.method(),
-//         req.path(),
-//         // req.headers(),
-//     )
-// }
-
 // ========
 // = Test = 
 // ========
