@@ -40,8 +40,8 @@ pub async fn start(host: String, port: String, secure: bool, path: String) -> st
                 async move {
                     let res = fut.await?;
                     if reqpath != "/favicon.ico" {
-                        let logline = format!("{:?} - {} - {} - {}", 
-                            time::now().to_rfc2822(),
+                        let logline = format!("{} - {} - {} - {}", 
+                            time::now().to_rfc2822().to_string(),
                             reqpeer,
                             reqmethod,
                             reqpath,
