@@ -1,4 +1,5 @@
-# zeppelin
+![Zeppelin](assets/Zeppelin_header.png)
+
 Zeppelin is a tiny web server for uploading and downloading files able to run on close to any system without dependencies and with some extra pentester toys.
 
 ## Build:
