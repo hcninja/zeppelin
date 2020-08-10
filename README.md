@@ -28,7 +28,8 @@ The standard running mode, is to serve the path where `zeppelin` is running on. 
 
 ## ToDo:
 - [x] Navigate the served directory
-- [ ] File upload
+- [x] File upload
+- [ ] HTTPS
 - [ ] System command execution
 - [ ] File navigator and uploader authentication
 - [ ] Web interface for logging request with headers

@@ -20,6 +20,7 @@ colored = "2.0.0"
 clap = "2.33.1"
 chrono = "0.4.13"
 actix-service = "1.0.5"
+tokio = "0.2.22"
 
 [profile.release]
 lto = true

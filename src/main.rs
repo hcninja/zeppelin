@@ -13,10 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+mod server;
+
 use clap::{App, Arg};
 use colored::*;
-
-mod server;
 
 // const VERSION: &str = "0.1.0";
 // This takes directly the version number from cargo.toml
@@ -69,6 +69,6 @@ fn main() {
     
     match server::start(host, port, tls, path) {
         Err(e) => println!("Error: {}", format!("{}", e).red().bold()),
-        _ => println!("Bye..."), //(), 
+        _ => println!("Bye..."),
     }
 }
