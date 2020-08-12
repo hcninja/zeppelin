@@ -39,7 +39,7 @@ The standard running mode, is to serve the path where `zeppelin` is running on. 
 ### Generating a testing self-signed certificate
 In order to enable TLS on _Zeppelin_ you must provide a certificate and a key in pem format, _Zeppelin_ will search for this two files under the name "cert.pem" and "key.pem".
 
-If you have no available certificate (you can use a Let's Encrypt one for free), ypu can generate a sel-signed certificate with openssl:
+If you have no available certificate (you can use a Let's Encrypt one for free), you can generate a self-signed certificate with openssl:
 
 ```bash
 openssl req -x509 -out cert.pem -keyout key.pem \
@@ -51,7 +51,7 @@ openssl req -x509 -out cert.pem -keyout key.pem \
 ## ToDo:
 - [x] Navigate the served directory
 - [x] File upload
-- [ ] HTTPS
+- [x] HTTPS
 - [ ] System command execution
 - [ ] File navigator and uploader authentication
 - [ ] Web interface for logging request with headers
