@@ -51,7 +51,7 @@ openssl req -x509 -out cert.pem -keyout key.pem \
 ## ToDo:
 - [x] Navigate the served directory
 - [x] File upload
-- [ ] HTTPS
+- [x] HTTPS
 - [ ] System command execution
 - [ ] File navigator and uploader authentication
 - [ ] Web interface for logging request with headers
