@@ -36,6 +36,18 @@ Usage of ./zeppelin:
 
 The standard running mode, is to serve the path where `zeppelin` is running on. For serving the `/etc` directory on all interfaces on port 8443 you can use `./zeppelin -host 0.0.0.0 -pots 8443 -path /etc`.
 
+### Generating a testing self-signed certificate
+In order to enable TLS on _Zeppelin_ you must provide a certificate and a key in pem format, _Zeppelin_ will search for this two files under the name "cert.pem" and "key.pem".
+
+If you have no available certificate (you can use a Let's Encrypt one for free), ypu can generate a sel-signed certificate with openssl:
+
+```bash
+openssl req -x509 -out cert.pem -keyout key.pem \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj '/CN=localhost' -extensions EXT -config <( \
+   printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+```
+
 ## ToDo:
 - [x] Navigate the served directory
 - [x] File upload

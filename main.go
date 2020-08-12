@@ -38,7 +38,7 @@ func main() {
 	hostFlg := flag.String("host", "127.0.0.1", "Server host")
 	portFlg := flag.String("port", "8080", "Server port")
 	pathFlg := flag.String("path", "./", "Path to serve and upload files to")
-	tlsFlag := flag.Bool("tls", false, "[NYI] Enables TLS. Cert and key must be in root 'cert.pem and key.pem'")
+	tlsFlag := flag.Bool("tls", false, "Enables TLS. Cert and key must be in root 'cert.pem and key.pem'")
 	safeFlg := flag.Bool("unsafe", false, "Removes the file upload limit of 8MB")
 	noupFlg := flag.Bool("noupload", false, "Disables the upload endpoint")
 	flag.Parse()
@@ -51,8 +51,7 @@ func main() {
 
 	var schema string = "http://"
 	if *tlsFlag {
-		// schema = "https://"
-		errPrinter.Println("- TLS not yet implemented")
+		schema = "https://"
 	}
 
 	path = *pathFlg
@@ -80,8 +79,14 @@ func main() {
 
 	log.Println("- Log:    ", italics("date - src:port - code - path"))
 
-	if err := r.Run(*hostFlg + ":" + *portFlg); err != nil {
-		log.Fatal(err)
+	if *tlsFlag {
+		if err := r.RunTLS(*hostFlg+":"+*portFlg, "./cert.pem", "key.pem"); err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		if err := r.Run(*hostFlg + ":" + *portFlg); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
@@ -161,6 +166,7 @@ func CustomizerMW() gin.HandlerFunc {
 // ===========
 // = Helpers =
 // ===========
+
 func nyi(c *gin.Context) {
 	c.JSON(http.StatusNotImplemented, gin.H{
 		"status":  http.StatusNotImplemented,
@@ -173,6 +179,7 @@ func nyi(c *gin.Context) {
 // =============
 // = Templates =
 // =============
+
 var indexTemplate = `<!-- Index template -->
 <html>
 <head>
