@@ -28,8 +28,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var version = "0.1.1"
-var path = "./"
+var (
+	version   = "dev_build"
+	buildTime = "N/A"
+	path      = "./"
+)
 
 func main() {
 	gin.SetMode(gin.ReleaseMode)
@@ -47,7 +50,7 @@ func main() {
 	italics := color.New(color.Italic).SprintFunc()
 	remarkText := color.New(color.FgMagenta, color.Bold).SprintFunc()
 
-	log.Printf("Starting Zeppelin v%s\n", version)
+	log.Printf("Starting Zeppelin %s (%s)\n", version, buildTime)
 
 	var schema string = "http://"
 	if *tlsFlag {
