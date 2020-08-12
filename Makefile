@@ -32,7 +32,19 @@ packed:
 
 .PHONY: macos
 macos:
-	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o ${BINARY}_darwin
+	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o ${BINARY}
+
+.PHONY: windows
+windows:
+	GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o ${BINARY}.exe
+
+.PHONY: linux
+linux:
+	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${BINARY}
+
+.PHONY: install
+install:
+	mv ${BINARY} ${GOBIN}
 
 .PHONY: clean
 clean:
