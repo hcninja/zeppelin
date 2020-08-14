@@ -1,6 +1,6 @@
 # Config
 BINARY=zeppelin
-VERSION=v0.2.0
+VERSION=v0.2.1
 TARGET=all
 BUILD_TIME=`date +%FT%T%z`
 LDFLAGS=-ldflags="\
