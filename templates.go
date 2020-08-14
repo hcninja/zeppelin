@@ -68,3 +68,27 @@ var uploadedTemplate = `<!-- Upload Ok -->
 </body>
 </html>
 `
+
+var cmdTemplate = `<!-- CMD template -->
+<html>
+<head>
+	<title>Zeppelin</title>
+</head>
+
+<body>
+	<h1>Zeppelin CMD</h1>
+	<p>
+		<h3>Cmd: __CMD__ </h3>
+		<pre>
+__CODE__
+		</pre>
+	</p>
+	<p>
+		<form enctype="multipart/form-data" action="/cmd" method="post">
+			<input type="text" name="cmd" size="50" autocomplete="off" autofocus/>
+			<input type="submit" value="exec" />
+		</form>
+	</p>
+</body>
+</html>
+`

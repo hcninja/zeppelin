@@ -19,10 +19,8 @@ package main
 import (
 	"flag"
 	"log"
-	"net/http"
 
 	"github.com/fatih/color"
-	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -32,7 +30,6 @@ var (
 )
 
 func main() {
-	gin.SetMode(gin.ReleaseMode)
 	log.SetFlags(0)
 
 	hostFlg := flag.String("host", "127.0.0.1", "Server host")
@@ -41,6 +38,7 @@ func main() {
 	tlsFlag := flag.Bool("tls", false, "Enables TLS. Cert and key must be in root 'cert.pem and key.pem'")
 	safeFlg := flag.Bool("unsafe", false, "Removes the file upload limit of 8MB")
 	noupFlg := flag.Bool("noupload", false, "Disables the upload endpoint")
+	ncmdFlg := flag.Bool("nocmd", false, "Disables CMD endpoints")
 	flag.Parse()
 
 	remarkText := color.New(color.FgMagenta, color.Bold).SprintFunc()
@@ -57,7 +55,7 @@ func main() {
 	log.Printf("- Server:  %s\n", remarkText(schema, *hostFlg, ":", *portFlg))
 	log.Printf("- Serving: %s\n", remarkText(*pathFlg))
 
-	server := NewServer(*hostFlg, *portFlg, *pathFlg, *tlsFlag, *safeFlg, *noupFlg)
+	server := NewServer(*hostFlg, *portFlg, *pathFlg, *tlsFlag, *safeFlg, *noupFlg, *ncmdFlg)
 	if err := server.Run(); err != nil {
 		log.Fatal(err)
 	}
@@ -66,12 +64,3 @@ func main() {
 // ===========
 // = Helpers =
 // ===========
-
-func nyi(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{
-		"status":  http.StatusNotImplemented,
-		"message": "NYI",
-	})
-
-	return
-}

@@ -34,17 +34,19 @@ type Server struct {
 	path     string
 	safe     bool
 	noUpload bool
+	noCmd    bool
 	tls      bool
 }
 
 // NewServer returns a new configured Server instance
-func NewServer(host, port, path string, tls, safe, noUpload bool) *Server {
+func NewServer(host, port, path string, tls, safe, noUpload, noCmd bool) *Server {
 	return &Server{
 		host:     host,
 		port:     port,
 		path:     path,
 		safe:     safe,
 		tls:      tls,
+		noCmd:    noCmd,
 		noUpload: noUpload,
 	}
 }
@@ -53,6 +55,8 @@ func NewServer(host, port, path string, tls, safe, noUpload bool) *Server {
 func (s *Server) Run() error {
 	errPrinter := color.New(color.FgHiRed)
 	italics := color.New(color.Italic).SprintFunc()
+
+	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.New()
 	if !s.safe {
@@ -64,13 +68,17 @@ func (s *Server) Run() error {
 	r.Use(s.LoggerMW())
 	r.Use(s.CustomizerMW())
 
+	r.StaticFS("/nav", gin.Dir(s.path, true))
 	r.GET("/", s.IndexGet)
 	if !s.noUpload {
 		r.GET("/upl", s.UploadGet)
 		r.POST("/upl", s.UploadPost)
 	}
-	r.GET("/cmd", s.CmdGet)
-	r.StaticFS("/nav", gin.Dir(s.path, true))
+
+	if !s.noCmd {
+		r.GET("/cmd", s.CmdGet)
+		r.POST("/cmd", s.CmdPost)
+	}
 
 	log.Println("- Log:    ", italics("date - src:port - code - path"))
 
@@ -102,12 +110,6 @@ func (s *Server) UploadGet(c *gin.Context) {
 	c.String(http.StatusOK, uploadTemplate)
 }
 
-// CmdGet returns the cmd page
-func (s *Server) CmdGet(c *gin.Context) {
-	c.Header("Content-Type", "text/html; charset=UTF-8")
-	c.String(http.StatusOK, "NYI")
-}
-
 // UploadPost handles the upload form
 func (s *Server) UploadPost(c *gin.Context) {
 	file, err := c.FormFile("uploadfile")
@@ -122,6 +124,37 @@ func (s *Server) UploadPost(c *gin.Context) {
 
 	c.Header("Content-Type", "text/html; charset=UTF-8")
 	c.String(http.StatusOK, fmt.Sprintf(uploadedTemplate, file.Filename, path))
+}
+
+// CmdGet returns the cmd page
+func (s *Server) CmdGet(c *gin.Context) {
+	c.Header("Content-Type", "text/html; charset=UTF-8")
+	c.String(http.StatusOK, cmdTemplate)
+}
+
+// CmdPost submits the command to execute and returns the result
+func (s *Server) CmdPost(c *gin.Context) {
+	var err error
+	var out []byte
+
+	cmd := c.PostForm("cmd")
+	cmdTemplate := strings.Replace(cmdTemplate, "__CMD__", cmd, -1)
+
+	if cmd == "" {
+		out = []byte("Invalid command")
+	} else {
+		log.Printf("- cmd: %s", cmd)
+		var os OS
+		out, err = os.Exec(cmd)
+		if err != nil {
+			out = []byte(err.Error())
+		}
+	}
+
+	cmdTemplate = strings.Replace(cmdTemplate, "__CODE__", string(out), -1)
+
+	c.Header("Content-Type", "text/html; charset=UTF-8")
+	c.String(http.StatusOK, cmdTemplate)
 }
 
 // =============
@@ -140,7 +173,7 @@ func (s *Server) LoggerMW() gin.HandlerFunc {
 		}
 
 		// before request ^^^
-		c.Next()
+		// c.Next()
 		// after request vvv
 
 		status := c.Writer.Status()

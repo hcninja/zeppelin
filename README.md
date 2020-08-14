@@ -22,6 +22,8 @@ With `./zeppelin -h` you will get the available flags.
 Usage of ./zeppelin:
   -host string
     	Server host (default "127.0.0.1")
+  -nocmd
+    	Disables CMD endpoints
   -noupload
     	Disables the upload endpoint
   -path string
@@ -29,7 +31,7 @@ Usage of ./zeppelin:
   -port string
     	Server port (default "8080")
   -tls
-    	[NYI] Enables TLS. Cert and key must be in root 'cert.pem and key.pem'
+    	Enables TLS. Cert and key must be in root 'cert.pem and key.pem'
   -unsafe
     	Removes the file upload limit of 8MB
 ```
@@ -52,7 +54,7 @@ openssl req -x509 -out cert.pem -keyout key.pem \
 - [x] Navigate the served directory
 - [x] File upload
 - [x] HTTPS
-- [ ] System command execution
+- [x] System command execution
 - [ ] File navigator and uploader authentication
 - [ ] Web interface for logging request with headers
 - [ ] Process injection/migration
