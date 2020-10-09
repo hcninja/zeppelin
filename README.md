@@ -55,6 +55,7 @@ openssl req -x509 -out cert.pem -keyout key.pem \
 - [x] File upload
 - [x] HTTPS
 - [x] System command execution
+- [ ] Reverse shell
 - [ ] File navigator and uploader authentication
 - [ ] Web interface for logging request with headers
 - [ ] Process injection/migration
